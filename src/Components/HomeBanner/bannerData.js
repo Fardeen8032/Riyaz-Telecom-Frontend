@@ -1,7 +1,7 @@
 export const bannerData = [
   {
     id: 1,
-    image: "/images/Banner1.webp",
+    image: "/images/banner1.webp",
     alt: "Banner 1",
   },
   {
