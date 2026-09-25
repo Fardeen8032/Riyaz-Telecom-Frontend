@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { mobileData } from "./Mobilecategorydata";
+import WishlistButton from "../Wishlist/WishlistButton";
 
 const Mobilecategory = () => {
   const products = Array.isArray(mobileData) ? mobileData : [];
@@ -44,7 +45,9 @@ const Mobilecategory = () => {
                 className="group overflow-hidden rounded-xl border border-border bg-background transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
               >
                 {/* Product Image */}
-                <div className="aspect-square overflow-hidden bg-[#FFFFFF]">
+                <div className="relative aspect-square overflow-hidden bg-background">
+                  <WishlistButton product={product} />
+
                   <img
                     src={product.image}
                     alt={product.name}

@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import {Search,Heart,ShoppingCart,User,Menu,X} from "lucide-react";
+import {Heart,ShoppingCart,User,Menu,X} from "lucide-react";
+import { useWishlist } from "../../Context/WishlistContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { wishlistCount } = useWishlist();
 
   const closeMobileMenu = () => {
     setIsMenuOpen(false);
@@ -89,13 +91,21 @@ const Navbar = () => {
 
           {/* Actions */}
           <div className="ml-8 flex items-center gap-5">
-            <button
-              type="button"
-              aria-label="Wishlist"
-              className="text-white transition-opacity duration-200 hover:opacity-70"
+            <Link
+              to="/wishlist"
+              className="relative text-white transition-opacity duration-200 hover:opacity-70"
+              aria-label={`Wishlist with ${wishlistCount} ${
+                wishlistCount === 1 ? "item" : "items"
+              }`}
             >
-              <Heart size={18} strokeWidth={1.5} />
-            </button>
+              <Heart size={19} strokeWidth={1.5} />
+
+              {wishlistCount > 0 && (
+                <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-semibold leading-none text-white">
+                  {wishlistCount > 99 ? "99+" : wishlistCount}
+                </span>
+              )}
+            </Link>
 
             <button
               type="button"
@@ -135,21 +145,6 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="border-t border-gray-100 bg-primary md:hidden">
           <div className="px-4 py-4 sm:px-6">
-            {/* Mobile Search */}
-            <div className="mb-4 flex h-10 items-center rounded-md bg-gray-50 px-3">
-              <Search
-                size={15}
-                strokeWidth={1.7}
-                className="text-gray-400"
-              />
-
-              <input
-                type="search"
-                placeholder="Search"
-                className="ml-2 w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
-              />
-            </div>
-
             {/* Mobile Navigation */}
             <div className="flex flex-col">
               <Link
@@ -187,13 +182,23 @@ const Navbar = () => {
 
             {/* Mobile Actions */}
             <div className="mt-4 flex items-center gap-6">
-              <button
-                type="button"
-                aria-label="Wishlist"
-                className="text-white"
+
+              <Link
+                to="/wishlist"
+                onClick={closeMobileMenu}
+                className="relative text-white transition-opacity duration-200 hover:opacity-70"
+                aria-label={`Wishlist with ${wishlistCount} ${
+                  wishlistCount === 1 ? "item" : "items"
+                }`}
               >
                 <Heart size={19} strokeWidth={1.5} />
-              </button>
+
+                {wishlistCount > 0 && (
+                  <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-semibold leading-none text-white">
+                    {wishlistCount > 99 ? "99+" : wishlistCount}
+                  </span>
+                )}
+              </Link>
 
               <button
                 type="button"
