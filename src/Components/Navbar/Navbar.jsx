@@ -115,13 +115,13 @@ const Navbar = () => {
               <ShoppingCart size={18} strokeWidth={1.5} />
             </button>
 
-            <button
-              type="button"
-              aria-label="Account"
+            <Link
+              to="/login"
               className="text-white transition-opacity duration-200 hover:opacity-70"
+              aria-label="Login"
             >
-              <User size={18} strokeWidth={1.5} />
-            </button>
+              <User size={19} strokeWidth={1.5} />
+            </Link>
           </div>
         </div>
 
@@ -208,13 +208,14 @@ const Navbar = () => {
                 <ShoppingCart size={19} strokeWidth={1.5} />
               </button>
 
-              <button
-                type="button"
-                aria-label="Account"
-                className="text-white"
+              <Link
+                to="/login"
+                onClick={closeMobileMenu}
+                className="text-white transition-opacity duration-200 hover:opacity-70"
+                aria-label="Login"
               >
                 <User size={19} strokeWidth={1.5} />
-              </button>
+              </Link>
             </div>
           </div>
         </div>
