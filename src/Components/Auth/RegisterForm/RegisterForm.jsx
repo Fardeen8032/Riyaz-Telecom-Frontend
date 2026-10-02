@@ -1,26 +1,73 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema } from "../../../Validation/authSchema";
+import { registerUser } from "../../../Utils/api/Api";
+import { toast } from "react-toastify";
 
 const RegisterForm = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
+  const [serverError, setServerError] = useState("");
+  const navigate = useNavigate();
+
+
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(registerSchema),
+
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+    },
+
+    mode: "onBlur",
   });
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
+  const onSubmit = async (formData) => {
+    setServerError("");
+    try {
 
-    setFormData((current) => ({
-      ...current,
-      [name]: value,
-    }));
-  };
+      const { confirmPassword, ...payload } = formData;
+      const response = await registerUser(payload);
+      toast.success(response?.message);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+      navigate("/login", {
+        state: {
+          message: "Registration successful. Please login.",
+        },
+      });
+    } catch (error) {
+      const responseData = error.response?.data;
+      toast.error(responseData.message);
+      if (responseData?.details?.length) {
+        responseData.details.forEach((item) => {
+          if (item.field) {
+            setError(item.field, {
+              type: "server",
+              message: item.message,
+            });
+          }
+        });
+
+        return;
+      }
+
+      if (responseData?.message) {
+        setServerError(responseData.message);
+        return;
+      }
+
+      setServerError(
+        "Something went wrong. Please check your connection and try again."
+      );
+    }
   };
 
   const handleGoogleRegister = () => {
@@ -28,7 +75,19 @@ const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
+      className="space-y-5"
+    >
+      {/* Server Error */}
+      {serverError && (
+        <div className="rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-600">
+          {serverError}
+        </div>
+      )}
+
+      {/* Name */}
       <div>
         <label
           htmlFor="register-name"
@@ -39,17 +98,21 @@ const RegisterForm = () => {
 
         <input
           id="register-name"
-          name="name"
           type="text"
-          value={formData.name}
-          onChange={handleChange}
           placeholder="Enter your name"
           autoComplete="name"
-          required
+          {...register("name")}
           className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-text outline-none transition focus:border-primary"
         />
+
+        {errors.name && (
+          <p className="mt-1 text-sm text-red-500">
+            {errors.name.message}
+          </p>
+        )}
       </div>
 
+      {/* Email */}
       <div>
         <label
           htmlFor="register-email"
@@ -60,17 +123,21 @@ const RegisterForm = () => {
 
         <input
           id="register-email"
-          name="email"
           type="email"
-          value={formData.email}
-          onChange={handleChange}
           placeholder="Enter your email"
           autoComplete="email"
-          required
+          {...register("email")}
           className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-text outline-none transition focus:border-primary"
         />
+
+        {errors.email && (
+          <p className="mt-1 text-sm text-red-500">
+            {errors.email.message}
+          </p>
+        )}
       </div>
 
+      {/* Phone */}
       <div>
         <label
           htmlFor="register-phone"
@@ -81,17 +148,21 @@ const RegisterForm = () => {
 
         <input
           id="register-phone"
-          name="phone"
           type="tel"
-          value={formData.phone}
-          onChange={handleChange}
           placeholder="Enter your phone number"
           autoComplete="tel"
-          required
+          {...register("phone")}
           className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-text outline-none transition focus:border-primary"
         />
+
+        {errors.phone && (
+          <p className="mt-1 text-sm text-red-500">
+            {errors.phone.message}
+          </p>
+        )}
       </div>
 
+      {/* Password */}
       <div>
         <label
           htmlFor="register-password"
@@ -102,17 +173,21 @@ const RegisterForm = () => {
 
         <input
           id="register-password"
-          name="password"
           type="password"
-          value={formData.password}
-          onChange={handleChange}
           placeholder="Create a password"
           autoComplete="new-password"
-          required
+          {...register("password")}
           className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-text outline-none transition focus:border-primary"
         />
+
+        {errors.password && (
+          <p className="mt-1 text-sm text-red-500">
+            {errors.password.message}
+          </p>
+        )}
       </div>
 
+      {/* Confirm Password */}
       <div>
         <label
           htmlFor="register-confirm-password"
@@ -123,24 +198,30 @@ const RegisterForm = () => {
 
         <input
           id="register-confirm-password"
-          name="confirmPassword"
           type="password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
           placeholder="Confirm your password"
           autoComplete="new-password"
-          required
+          {...register("confirmPassword")}
           className="mt-2 w-full rounded-md border border-border bg-background px-3 py-2.5 text-sm text-text outline-none transition focus:border-primary"
         />
+
+        {errors.confirmPassword && (
+          <p className="mt-1 text-sm text-red-500">
+            {errors.confirmPassword.message}
+          </p>
+        )}
       </div>
 
+      {/* Submit */}
       <button
         type="submit"
-        className="w-full rounded-md bg-primary px-5 py-3 text-sm font-medium text-secondary transition-colors hover:bg-primary-hover"
+        disabled={isSubmitting}
+        className="w-full rounded-md bg-primary cursor-pointer px-5 py-3 text-sm font-medium text-secondary transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Create Account
+        {isSubmitting ? "Creating Account..." : "Create Account"}
       </button>
 
+      {/* Divider */}
       <div className="relative flex items-center">
         <div className="h-px flex-1 bg-border" />
 
@@ -151,15 +232,18 @@ const RegisterForm = () => {
         <div className="h-px flex-1 bg-border" />
       </div>
 
+      {/* Google */}
       <button
         type="button"
         onClick={handleGoogleRegister}
         className="flex w-full items-center justify-center gap-3 rounded-md border border-border bg-background px-5 py-3 text-sm font-medium text-text transition-colors hover:bg-background-secondary"
       >
         <span className="text-base font-bold">G</span>
+
         Continue with Google
       </button>
 
+      {/* Login */}
       <p className="text-center text-sm text-text-secondary">
         Already have an account?{" "}
         <Link
