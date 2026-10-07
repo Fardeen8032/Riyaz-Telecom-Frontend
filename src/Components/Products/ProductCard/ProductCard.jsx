@@ -1,7 +1,7 @@
 import WishlistButton from "../../Wishlist/WishlistButton";
 
 const ProductCard = ({ product }) => {
-  if (!product?.id || !product?.name || !product?.image) {
+  if (!product?._id || !product?.name) {
     return null;
   }
 
@@ -11,8 +11,8 @@ const ProductCard = ({ product }) => {
         <WishlistButton product={product} />
 
         <img
-          src={product.image}
-          alt={product.name}
+          src={product?.image}
+          alt={product?.name}
           loading="lazy"
           onError={(event) => {
             event.currentTarget.style.visibility = "hidden";

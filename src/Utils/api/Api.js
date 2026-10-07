@@ -30,3 +30,39 @@ export const loginUser = async (payload) => {
     throw error;
   }
 };
+
+export const getCategories = async () => {
+  try {
+    const url = `${environment.base_url}${API_URLS.CATEGORY.GET_ALL}`;
+
+    const response = await axios.get(url);
+
+    return response.data;
+  } catch (error) {
+    console.error("Get categories API failed:", error);
+    throw error;
+  }
+};
+
+export const getProducts = async ({
+  page = 1,
+  limit = 12,
+  category = "",
+} = {}) => {
+  try {
+    const url = `${environment.base_url}${API_URLS.PRODUCT.GET_ALL}`;
+
+    const response = await axios.get(url, {
+      params: {
+        page,
+        limit,
+        ...(category && category !== "All" && { category }),
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Get products API failed:", error);
+    throw error;
+  }
+};

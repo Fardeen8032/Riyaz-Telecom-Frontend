@@ -1,9 +1,12 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
-const CategorySlider = ({categories,activeCategory,onCategoryChange}) => {
-
-    if (!Array.isArray(categories) || !categories.length) {
+const CategorySlider = ({
+  categories,
+  activeCategory,
+  onCategoryChange,
+}) => {
+  if (!Array.isArray(categories) || !categories.length) {
     return null;
   }
 
