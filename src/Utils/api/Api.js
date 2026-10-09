@@ -66,3 +66,29 @@ export const getProducts = async ({
     throw error;
   }
 };
+
+export const getProductById = async (id) => {
+  try {
+    const url = `${environment.base_url}${API_URLS.PRODUCT.GET_BY_ID(id)}`;
+
+    const response = await axios.get(url);
+
+    return response.data;
+  } catch (error) {
+    console.error("Get product API failed:", error);
+    throw error;
+  }
+};
+
+export const getRelatedProducts = async (id) => {
+  try {
+    const url = `${environment.base_url}${API_URLS.PRODUCT.GET_RELATED(id)}`;
+
+    const response = await axios.get(url);
+
+    return response.data;
+  } catch (error) {
+    console.error("Get related products API failed:", error);
+    throw error;
+  }
+};
