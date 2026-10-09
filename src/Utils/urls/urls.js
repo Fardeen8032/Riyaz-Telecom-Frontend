@@ -9,5 +9,7 @@ export const API_URLS = {
   },
   PRODUCT: {
     GET_ALL: "products/get-products",
+    GET_BY_ID: (id) => `products/${id}`,
+    GET_RELATED: (id) => `products/${id}/related`,
   },
 };
