@@ -251,6 +251,14 @@ const RegisterForm = () => {
       </div>
 
       {/* Submit */}
+      {/* Create Account */}
+      <button
+        type="submit"
+        disabled={isSubmitting || isGoogleSubmitting}
+        className="flex w-full items-center justify-center rounded-md bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {isSubmitting ? "Creating Account..." : "Create Account"}
+      </button>
       <button
         type="button"
         onClick={handleGoogleRegister}
