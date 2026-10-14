@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {Heart,ShoppingCart,User,Menu,X} from "lucide-react";
 import { useWishlist } from "../../Context/WishlistContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { wishlistCount } = useWishlist();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+
 
   const closeMobileMenu = () => {
     setIsMenuOpen(false);
@@ -116,11 +119,18 @@ const Navbar = () => {
             </button>
 
             <Link
-              to="/login"
-              className="text-white transition-opacity duration-200 hover:opacity-70"
-              aria-label="Login"
+              to={isAuthenticated ? "/profile" : "/login"}
+              className="flex items-center gap-2 text-white transition-opacity duration-200 hover:opacity-70"
             >
               <User size={19} strokeWidth={1.5} />
+
+              {isAuthenticated ? (
+                <span className="hidden md:inline">
+                  Hi, {user?.name?.split(" ")[0] || "User"}
+                </span>
+              ) : (
+                <span className="hidden md:inline">Login</span>
+              )}
             </Link>
           </div>
         </div>
@@ -207,14 +217,19 @@ const Navbar = () => {
               >
                 <ShoppingCart size={19} strokeWidth={1.5} />
               </button>
-
               <Link
-                to="/login"
-                onClick={closeMobileMenu}
-                className="text-white transition-opacity duration-200 hover:opacity-70"
-                aria-label="Login"
+                to={isAuthenticated ? "/profile" : "/login"}
+                className="flex items-center gap-2 text-white transition-opacity duration-200 hover:opacity-70 text-white"
               >
                 <User size={19} strokeWidth={1.5} />
+
+                {isAuthenticated ? (
+                  <span className="hidden md:inline">
+                    Hi, {user?.name?.split(" ")[0] || "User"}
+                  </span>
+                ) : (
+                  <span className="hidden md:inline">Login</span>
+                )}
               </Link>
             </div>
           </div>

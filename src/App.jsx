@@ -14,6 +14,7 @@ import ForgotPassword from "./Pages/Auth/ForgotPassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProductDetail from "./Pages/Products/ProductDetail/ProductDetail";
+import Profile from "./Pages/Profile/Profile";
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/profile" element={<Profile />} />
 
           </Routes>
         </main>
