@@ -251,7 +251,6 @@ const RegisterForm = () => {
       </div>
 
       {/* Submit */}
-      {/* Create Account */}
       <button
         type="submit"
         disabled={isSubmitting || isGoogleSubmitting}
