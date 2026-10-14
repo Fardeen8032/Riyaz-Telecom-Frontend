@@ -1,13 +1,19 @@
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { loginSchema } from "../../../Validation/authSchema";
-import { loginUser } from "../../../Utils/api/Api";
+import {loginUser,googleLogin} from "../../../Utils/api/Api";
+import { signInWithGoogle } from "../../../service/googleAuthService";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../../../Redux/auth/authSlice";
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
 
   const {
     register,
@@ -16,37 +22,38 @@ const LoginForm = () => {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(loginSchema),
-
     defaultValues: {
       email: "",
       password: "",
     },
-
     mode: "onBlur",
   });
 
+  const redirectAfterLogin = () => {
+    const redirectTo = location.state?.from || "/";
+
+    navigate(redirectTo, {
+      replace: true,
+    });
+  };
+
   const onSubmit = async (formData) => {
     try {
-      const payload = {
+      const response = await loginUser({
         email: formData.email,
         password: formData.password,
-      };
+      });
 
-      const response = await loginUser(payload);
+      const { accessToken, user } = response.data;
 
-      console.log("Login successful:", response);
-      localStorage.setItem(
-        "accessToken",
-        response.data.accessToken
-      );
+      if (!accessToken || !user) {
+        throw new Error("Login response is missing user or access token.");
+      }
+
+      dispatch(setCredentials({ accessToken, user }));
 
       toast.success(response.message);
-
-      const redirectTo = location.state?.from || "/";
-
-      navigate(redirectTo, {
-        replace: true,
-      });
+      redirectAfterLogin();
     } catch (error) {
       const responseData = error.response?.data;
 
@@ -61,23 +68,66 @@ const LoginForm = () => {
         });
 
         toast.error(responseData.message);
-
-        return;
-      }
-
-      if (responseData?.message) {
-        toast.error(responseData.message);
         return;
       }
 
       toast.error(
-        "Something went wrong. Please check your connection and try again."
+        responseData?.message ||
+          "Something went wrong. Please check your connection and try again."
       );
     }
   };
 
-  const handleGoogleLogin = () => {
-    // Google OAuth will be implemented later.
+  const handleGoogleLogin = async () => {
+    try {
+      setIsGoogleSubmitting(true);
+
+      // Step 1: Sign in with Google through Firebase.
+      const { idToken } = await signInWithGoogle();
+
+      // Step 2: Send the Firebase ID token to Express.
+      const response = await googleLogin(idToken);
+
+      const { accessToken, user } = response.data;
+
+      if (!accessToken || !user) {
+        throw new Error(
+          "Google login response is missing user or access token."
+        );
+      }
+
+      dispatch(setCredentials({ accessToken, user }));
+
+      // Step 3: Store the application JWT.
+      localStorage.setItem("accessToken", response.data.accessToken);
+
+      toast.success(response.message || "Google sign-in successful.");
+
+      // Step 4: Redirect after successful login.
+      redirectAfterLogin();
+    } catch (error) {
+      const errorCode = error.code;
+      const responseMessage = error.response?.data?.message;
+
+      if (errorCode === "auth/popup-closed-by-user") {
+        toast.info("Google sign-in was cancelled.");
+        return;
+      }
+
+      if (errorCode === "auth/popup-blocked") {
+        toast.error("Your browser blocked the Google sign-in popup.");
+        return;
+      }
+
+      toast.error(
+        responseMessage ||
+          "Google sign-in failed. Please try again."
+      );
+
+      console.error("Google login error:", error);
+    } finally {
+      setIsGoogleSubmitting(false);
+    }
   };
 
   return (
@@ -145,10 +195,10 @@ const LoginForm = () => {
         )}
       </div>
 
-      {/* Login button */}
+      {/* Email/password login */}
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || isGoogleSubmitting}
         className="w-full rounded-md bg-primary px-5 py-3 text-sm font-medium text-secondary transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSubmitting ? "Logging in..." : "Login"}
@@ -158,25 +208,26 @@ const LoginForm = () => {
       <div className="relative flex items-center">
         <div className="h-px flex-1 bg-border" />
 
-        <span className="px-3 text-xs text-text-secondary">
-          OR
-        </span>
+        <span className="px-3 text-xs text-text-secondary">OR</span>
 
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      {/* Google */}
+      {/* Google login */}
       <button
         type="button"
         onClick={handleGoogleLogin}
-        className="flex w-full items-center justify-center gap-3 rounded-md border border-border bg-background px-5 py-3 text-sm font-medium text-text transition-colors hover:bg-background-secondary"
+        disabled={isGoogleSubmitting || isSubmitting}
+        className="flex w-full items-center justify-center gap-3 rounded-md border border-border bg-background px-5 py-3 text-sm font-medium text-text transition-colors hover:bg-background-secondary disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
       >
         <span className="text-base font-bold">G</span>
 
-        Continue with Google
+        {isGoogleSubmitting
+          ? "Signing in with Google..."
+          : "Continue with Google"}
       </button>
 
-      {/* Register */}
+      {/* Registration */}
       <p className="text-center text-sm text-text-secondary">
         Don't have an account?{" "}
         <Link

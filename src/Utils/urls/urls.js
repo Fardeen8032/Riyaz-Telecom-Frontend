@@ -2,6 +2,7 @@ export const API_URLS = {
   AUTH: {
     REGISTER: "auth/register",
     LOGIN: "auth/login",
+    GOOGLE_LOGIN: "auth/google",
     REFRESH_TOKEN: "auth/refresh-token",
   },
   CATEGORY: {

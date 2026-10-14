@@ -92,3 +92,23 @@ export const getRelatedProducts = async (id) => {
     throw error;
   }
 };
+
+
+export const googleLogin = async (idToken) => {
+  try {
+    const url = `${environment.base_url}${API_URLS.AUTH.GOOGLE_LOGIN}`;
+
+    const response = await axios.post(url, {
+      idToken,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Google login API failed:",
+      error.response?.data || error.message
+    );
+
+    throw error;
+  }
+};

@@ -3,13 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../../../Validation/authSchema";
-import { registerUser } from "../../../Utils/api/Api";
+import { registerUser, googleLogin } from "../../../Utils/api/Api";
+import { signInWithGoogle } from "../../../service/googleAuthService";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "../../../Redux/auth/authSlice";
 import { toast } from "react-toastify";
 
 const RegisterForm = () => {
   const [serverError, setServerError] = useState("");
+  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -70,8 +74,42 @@ const RegisterForm = () => {
     }
   };
 
-  const handleGoogleRegister = () => {
-    // Google OAuth will be implemented later.
+  const handleGoogleRegister = async () => {
+    setServerError("");
+    setIsGoogleSubmitting(true);
+
+    try {
+      const { idToken } = await signInWithGoogle();
+
+      // Verify the Firebase ID token through your backend.
+      const response = await googleLogin(idToken);
+
+      const { accessToken, user } = response.data ?? {};
+
+      if (!accessToken || !user) {
+        throw new Error("Google authentication response is missing user or access token.");
+      }
+
+      dispatch(setCredentials({ accessToken, user }));
+
+      toast.success(response.message || "Google registration successful.");
+
+      navigate("/", { replace: true });
+    } catch (error) {
+      const errorCode = error.code;
+      const message =
+        error.response?.data?.message ||
+        "Unable to register with Google. Please try again.";
+
+      if (errorCode === "auth/popup-closed-by-user") {
+        return;
+      }
+
+      setServerError(message);
+      toast.error(message);
+    } finally {
+      setIsGoogleSubmitting(false);
+    }
   };
 
   return (
@@ -214,11 +252,16 @@ const RegisterForm = () => {
 
       {/* Submit */}
       <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full rounded-md bg-primary cursor-pointer px-5 py-3 text-sm font-medium text-secondary transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+        type="button"
+        onClick={handleGoogleRegister}
+        disabled={isSubmitting || isGoogleSubmitting}
+        className="flex w-full items-center justify-center gap-3 rounded-md border border-border bg-background px-5 py-3 text-sm font-medium text-text transition-colors hover:bg-background-secondary disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
       >
-        {isSubmitting ? "Creating Account..." : "Create Account"}
+        <span className="text-base font-bold">G</span>
+
+        {isGoogleSubmitting
+          ? "Creating Account..."
+          : "Continue with Google"}
       </button>
 
       {/* Divider */}
@@ -231,17 +274,6 @@ const RegisterForm = () => {
 
         <div className="h-px flex-1 bg-border" />
       </div>
-
-      {/* Google */}
-      <button
-        type="button"
-        onClick={handleGoogleRegister}
-        className="flex w-full items-center justify-center gap-3 rounded-md border border-border bg-background px-5 py-3 text-sm font-medium text-text transition-colors hover:bg-background-secondary"
-      >
-        <span className="text-base font-bold">G</span>
-
-        Continue with Google
-      </button>
 
       {/* Login */}
       <p className="text-center text-sm text-text-secondary">
