@@ -5,21 +5,49 @@ import Home from "./Pages/Home/Home";
 import About from "./Pages/About/About";
 import Contact from "./Pages/Contact/Contact";
 import Service from "./Pages/Service/Service";
-
+import Wishlist from "./Pages/Wishlist/Wishlist";
+import { WishlistProvider } from "./Context/WishlistContext";
+import Products from "./Pages/Products/Products";
+import Login from "./Pages/Auth/Login";
+import Register from "./Pages/Auth/Register";
+import ForgotPassword from "./Pages/Auth/ForgotPassword";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ProductDetail from "./Pages/Products/ProductDetail/ProductDetail";
+import Profile from "./Pages/Profile/Profile";
 
 const App = () => {
   return (
     <BrowserRouter>
-      <Navbar />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/services" element={<Service />} />
-        </Routes>
-      </main>
-      <Footer />
+      <WishlistProvider>
+        <Navbar />
+
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/services" element={<Service />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/profile" element={<Profile />} />
+
+          </Routes>
+        </main>
+
+        <Footer />
+      </WishlistProvider>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+      />
     </BrowserRouter>
   );
 };
