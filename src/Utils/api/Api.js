@@ -67,6 +67,19 @@ export const getProducts = async ({
   }
 };
 
+export const getFeaturedMobiles = async () => {
+  try {
+    const url = `${environment.base_url}${API_URLS.PRODUCT.GET_FEATURED_MOBILES}`;
+
+    const response = await axios.get(url);
+
+    return response.data;
+  } catch (error) {
+    console.error("Get featured mobiles API failed:", error);
+    throw error;
+  }
+};
+
 export const getProductById = async (id) => {
   try {
     const url = `${environment.base_url}${API_URLS.PRODUCT.GET_BY_ID(id)}`;
