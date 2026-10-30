@@ -12,8 +12,8 @@ const ProductCard = ({ product }) => {
         <WishlistButton product={product} />
 
         <img
-          src={product?.image}
-          alt={product?.name}
+          src={product?.images?.[0] ?? ""}
+          alt={product?.name ?? "Product image"}
           loading="lazy"
           onError={(event) => {
             event.currentTarget.style.visibility = "hidden";
