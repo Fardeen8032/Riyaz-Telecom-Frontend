@@ -27,7 +27,7 @@ const Mobilecategory = () => {
       } catch (error) {
         console.error("Failed to fetch featured mobiles:", error);
 
-        setError("Unable to load featured mobiles. Please try again.");
+        setError("Unable to load featured mobiles.");
         setProducts([]);
       } finally {
         setIsLoading(false);
@@ -51,27 +51,19 @@ const Mobilecategory = () => {
       </div>
 
       {isLoading && (
-        <p className="py-6 text-center text-gray-500">
+        <p className="py-6 text-gray-500">
           Loading featured mobiles...
         </p>
       )}
 
       {!isLoading && error && (
-        <div className="py-6 text-center" role="alert">
+        <div className="py-6" role="alert">
           <p className="mb-3 text-red-500">{error}</p>
-
-          <button
-            type="button"
-            onClick={() => window.location.reload()}
-            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-          >
-            Retry
-          </button>
         </div>
       )}
 
       {!isLoading && !error && products.length === 0 && (
-        <p className="py-6 text-center text-gray-500">
+        <p className="py-6 text-gray-500">
           No featured mobiles available.
         </p>
       )}

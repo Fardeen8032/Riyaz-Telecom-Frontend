@@ -14,4 +14,9 @@ export const API_URLS = {
     GET_RELATED: (id) => `products/${id}/related`,
     GET_FEATURED_MOBILES: "products/featured-mobiles"
   },
+   CART: {
+    GET: "cart",
+    ITEMS: "cart/items",
+    ITEM: (productId) => `cart/items/${productId}`,
+  },
 };

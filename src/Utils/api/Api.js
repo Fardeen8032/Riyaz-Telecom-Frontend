@@ -123,5 +123,96 @@ export const googleLogin = async (idToken) => {
     );
 
     throw error;
-  }
+  };
 };
+  export const getCart = async (accessToken) => {
+    try {
+      const response = await axios.get(
+        `${environment.base_url}${API_URLS.CART.GET}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Get cart API failed:", error);
+      throw error;
+    }
+  };
+
+  export const addCartItem = async (productId, quantity, accessToken) => {
+  try {
+    const response = await axios.post(
+      `${environment.base_url}${API_URLS.CART.ITEMS}`,
+      { productId, quantity },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Add cart item API failed:", error);
+    throw error;
+  }
+  };
+
+  export const updateCartItem = async (productId, quantity, accessToken) => {
+  try {
+    const response = await axios.patch(
+      `${environment.base_url}${API_URLS.CART.ITEM(productId)}`,
+      { quantity },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Update cart item API failed:", error);
+    throw error;
+  }
+  };
+
+  export const removeCartItem = async (productId, accessToken) => {
+  try {
+    const response = await axios.delete(
+      `${environment.base_url}${API_URLS.CART.ITEM(productId)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Remove cart item API failed:", error);
+    throw error;
+  }
+  };
+
+  export const clearCart = async (accessToken) => {
+  try {
+    const response = await axios.delete(
+      `${environment.base_url}${API_URLS.CART.GET}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Clear cart API failed:", error);
+    throw error;
+  }
+  };

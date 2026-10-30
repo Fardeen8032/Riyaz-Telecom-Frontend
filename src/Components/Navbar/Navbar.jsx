@@ -1,13 +1,28 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {fetchCart,resetCart,setCartUser} from "../../Redux/cart/cartSlice";
 import { Link, NavLink } from "react-router-dom";
-import { useSelector } from "react-redux";
 import {Heart,ShoppingCart,User,Menu,X} from "lucide-react";
 import { useWishlist } from "../../Context/WishlistContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { wishlistCount } = useWishlist();
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, user, accessToken } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const userId = user?._id ?? user?.id ?? null;
+  const cartItems = useSelector((state) => state.cart.items);
+  const cartCount = cartItems.reduce((total, item) => total + Number(item?.quantity ?? 0),0);
+
+  useEffect(() => {
+    if (!isAuthenticated || !userId || !accessToken) {
+      dispatch(resetCart());
+      return;
+    }
+
+    dispatch(setCartUser(userId));
+    dispatch(fetchCart());
+  }, [dispatch, isAuthenticated, userId, accessToken]);
 
 
   const closeMobileMenu = () => {
@@ -110,13 +125,21 @@ const Navbar = () => {
               )}
             </Link>
 
-            <button
-              type="button"
-              aria-label="Shopping cart"
-              className="text-white transition-opacity duration-200 hover:opacity-70"
+            <Link
+              to="/cart"
+              aria-label={`Shopping cart with ${cartCount} ${
+                cartCount === 1 ? "item" : "items"
+              }`}
+              className="relative text-white transition-opacity duration-200 hover:opacity-70"
             >
               <ShoppingCart size={18} strokeWidth={1.5} />
-            </button>
+
+              {cartCount > 0 && (
+                <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-semibold leading-none text-white">
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
+            </Link>
 
             <Link
               to={isAuthenticated ? "/profile" : "/login"}
@@ -210,13 +233,23 @@ const Navbar = () => {
                 )}
               </Link>
 
-              <button
-                type="button"
-                aria-label="Shopping cart"
-                className="text-white"
+              <Link
+                to="/cart"
+                onClick={closeMobileMenu}
+                aria-label={`Shopping cart with ${cartCount} ${
+                  cartCount === 1 ? "item" : "items"
+                }`}
+                className="relative text-white transition-opacity duration-200 hover:opacity-70"
               >
                 <ShoppingCart size={19} strokeWidth={1.5} />
-              </button>
+
+                {cartCount > 0 && (
+                  <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-semibold leading-none text-white">
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
+              </Link>
+
               <Link
                 to={isAuthenticated ? "/profile" : "/login"}
                 className="flex items-center gap-2 text-white transition-opacity duration-200 hover:opacity-70 text-white"
