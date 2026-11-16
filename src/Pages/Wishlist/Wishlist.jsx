@@ -104,23 +104,28 @@ const Wishlist = () => {
             <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-10 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 xl:gap-6">
               {wishlist.map((product) => (
                 <article
-                  key={product?._id ?? product?.id}
-                  className="group overflow-hidden rounded-xl border border-border bg-background transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
-                >
-                  {/* Product Image and Actions */}
-                  <div className="relative aspect-square overflow-hidden bg-background">
-                    <WishlistButton product={product} />
+                key={product?._id ?? product?.id}
+                className="group overflow-hidden rounded-xl border border-border bg-background transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+              >
+                {/* Product Image and Actions */}
+                <div className="relative aspect-square overflow-hidden bg-background">
+                  <WishlistButton product={product} />
 
-                    <button
-                      type="button"
-                      title="Add to Cart"
-                      aria-label={`Add ${product?.name ?? "product"} to cart`}
-                      onClick={() => handleAddToCart(product)}
-                      className="absolute right-2 top-[50px] z-10 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-transform duration-200 hover:scale-105"
-                    >
-                      <ShoppingCart size={18} strokeWidth={1.8} />
-                    </button>
+                  <button
+                    type="button"
+                    title="Add to Cart"
+                    aria-label={`Add ${product?.name ?? "product"} to cart`}
+                    onClick={() => handleAddToCart(product)}
+                    className="absolute right-2 top-[50px] z-10 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-transform duration-200 hover:scale-105"
+                  >
+                    <ShoppingCart size={18} strokeWidth={1.8} />
+                  </button>
 
+                  <Link
+                    to={`/products/${product?._id ?? product?.id}`}
+                    aria-label={`View ${product?.name ?? "product"} details`}
+                    className="block h-full w-full cursor-pointer"
+                  >
                     <img
                       src={product?.images?.[0] ?? ""}
                       alt={product?.name ?? "Product image"}
@@ -128,17 +133,22 @@ const Wishlist = () => {
                       onError={(event) => {
                         event.currentTarget.style.visibility = "hidden";
                       }}
-                      className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                      className="h-full w-full cursor-pointer object-contain transition-transform duration-300 group-hover:scale-105"
                     />
-                  </div>
+                  </Link>
+                </div>
 
-                  {/* Product Details */}
-                  <div className="p-3 sm:p-4">
+                {/* Product Details */}
+                <div className="p-3 sm:p-4">
+                  <Link
+                    to={`/products/${product?._id ?? product?.id}`}
+                    className="block cursor-pointer"
+                  >
                     <p className="text-xs font-medium text-text-secondary sm:text-sm">
                       {product?.category ?? "Uncategorized"}
                     </p>
 
-                    <h2 className="mt-1 line-clamp-2 text-sm font-semibold text-text sm:text-base">
+                    <h2 className="mt-1 line-clamp-2 text-sm font-semibold text-text transition-colors hover:text-primary sm:text-base">
                       {product?.name ?? "Unnamed product"}
                     </h2>
 
@@ -147,16 +157,17 @@ const Wishlist = () => {
                         ₹{Number(product.price).toLocaleString("en-IN")}
                       </p>
                     )}
+                  </Link>
 
-                    <button
-                      type="button"
-                      onClick={() => removeFromWishlist(product?._id ?? product?.id)}
-                      className="mt-3 cursor-pointer text-xs font-medium text-error hover:opacity-70"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </article>
+                  <button
+                    type="button"
+                    onClick={() => removeFromWishlist(product?._id ?? product?.id)}
+                    className="mt-3 cursor-pointer text-xs font-medium text-error hover:opacity-70"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </article>
               ))}
             </div>
 

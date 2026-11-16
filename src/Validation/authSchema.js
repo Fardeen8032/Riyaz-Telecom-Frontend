@@ -49,3 +49,39 @@ export const registerSchema = z
       .min(1, "Password is required"),
   })
   .strict();
+
+  export const forgotPasswordSchema = z.object({
+    email: z
+      .string()
+      .trim()
+      .min(1, "Email address is required.")
+      .email("Please enter a valid email address."),
+  });
+
+
+
+  export const verifyOTPSchema = z.object({
+    otp: z
+      .string()
+      .length(6, "OTP must contain exactly 6 digits.")
+      .regex(/^\d{6}$/, "OTP must contain only numbers."),
+  });
+
+
+  export const resetPasswordSchema = z
+    .object({
+      newPassword: z
+        .string()
+        .min(8, "Password must contain at least 8 characters."),
+
+      confirmPassword: z
+        .string()
+        .min(1, "Please confirm your password."),
+    })
+    .refine(
+      (formData) => formData.newPassword === formData.confirmPassword,
+      {
+        message: "Passwords do not match.",
+        path: ["confirmPassword"],
+      }
+    );

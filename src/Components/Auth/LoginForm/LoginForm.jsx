@@ -199,7 +199,7 @@ const LoginForm = () => {
       <button
         type="submit"
         disabled={isSubmitting || isGoogleSubmitting}
-        className="w-full rounded-md bg-primary px-5 py-3 text-sm font-medium text-secondary transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-md bg-primary px-5 py-3 cursor-pointer text-sm font-medium text-secondary transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSubmitting ? "Logging in..." : "Login"}
       </button>

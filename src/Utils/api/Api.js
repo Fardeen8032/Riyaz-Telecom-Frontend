@@ -31,6 +31,54 @@ export const loginUser = async (payload) => {
   }
 };
 
+export const forgotPassword = async (payload) => {
+  try {
+    const url = `${environment.base_url}${API_URLS.AUTH.FORGOT_PASSWORD}`;
+
+    const response = await axios.post(url, payload, {
+      withCredentials: true,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Forgot Password API failed:", error);
+
+    throw error;
+  }
+};
+
+export const verifyOTP = async (payload) => {
+  try {
+    const url = `${environment.base_url}${API_URLS.AUTH.VERIFY_OTP}`;
+
+    const response = await axios.post(url, payload, {
+      withCredentials: true,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Verify OTP API failed:", error);
+
+    throw error;
+  }
+};
+
+export const resetPassword = async (payload) => {
+  try {
+    const url = `${environment.base_url}${API_URLS.AUTH.RESET_PASSWORD}`;
+
+    const response = await axios.post(url, payload, {
+      withCredentials: true,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Reset Password API failed:", error);
+
+    throw error;
+  }
+};
+
 export const getCategories = async () => {
   try {
     const url = `${environment.base_url}${API_URLS.CATEGORY.GET_ALL}`;
