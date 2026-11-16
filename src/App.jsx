@@ -16,6 +16,8 @@ import "react-toastify/dist/ReactToastify.css";
 import ProductDetail from "./Pages/Products/ProductDetail/ProductDetail";
 import Profile from "./Pages/Profile/Profile";
 import CartPage from "./Pages/Cart/CartPage";
+import ResetPassword from "./Components/Auth/ForgotPasswordForm/ResetPassword";
+import VerifyOTP from "./Components/Auth/ForgotPasswordForm/VerifyOTP";
 
 const App = () => {
   return (
@@ -37,6 +39,8 @@ const App = () => {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/verify-otp" element={<VerifyOTP />} />
 
           </Routes>
         </main>

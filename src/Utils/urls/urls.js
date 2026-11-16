@@ -4,6 +4,9 @@ export const API_URLS = {
     LOGIN: "auth/login",
     GOOGLE_LOGIN: "auth/google",
     REFRESH_TOKEN: "auth/refresh-token",
+    FORGOT_PASSWORD: "auth/forgot-password",
+    VERIFY_OTP: "auth/verify-otp",
+    RESET_PASSWORD: "auth/reset-password",
   },
   CATEGORY: {
     GET_ALL: "categories",

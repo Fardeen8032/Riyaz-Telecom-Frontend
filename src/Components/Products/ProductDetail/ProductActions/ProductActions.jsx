@@ -61,7 +61,7 @@ const ProductActions = ({ product }) => {
         type="button"
         disabled={isOutOfStock || isAddingToCart}
         onClick={handleAddToCart}
-        className="w-full rounded-lg border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+        className="w-full rounded-lg cursor-pointer border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
       >
         {isAddingToCart ? "Adding..." : "Add to Cart"}
       </button>
@@ -70,7 +70,7 @@ const ProductActions = ({ product }) => {
         type="button"
         disabled={isOutOfStock || isAddingToCart}
         onClick={handleBuyNow}
-        className="w-full rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+        className="w-full rounded-lg cursor-pointer bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
       >
         Buy Now
       </button>
